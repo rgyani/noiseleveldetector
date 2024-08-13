@@ -18,6 +18,7 @@ public class NoiseMonitoringService extends Service {
 
     private static final int SAMPLE_RATE = 44100;
     private static final String CHANNEL_ID = "NoiseAlertChannel";
+    private static final String NOISE_LEVEL_UPDATE = "com.example.noiseleveldetector.NOISE_LEVEL_UPDATE";
     private AudioRecord recorder;
     private Thread monitoringThread;
     private int noiseThreshold;
@@ -66,6 +67,7 @@ public class NoiseMonitoringService extends Service {
                 double decibels = 20 * Math.log10(amplitude / 32767.0);
 
                 handler.post(() -> {
+                    broadcastNoiseLevel(decibels);
                     if (decibels > noiseThreshold) {
                         triggerNotification(decibels);
                     }
@@ -88,6 +90,12 @@ public class NoiseMonitoringService extends Service {
             sum += Math.abs(s);
         }
         return sum / buffer.length;
+    }
+
+    private void broadcastNoiseLevel(double decibels) {
+        Intent intent = new Intent(NOISE_LEVEL_UPDATE);
+        intent.putExtra("noise_level", decibels);
+        sendBroadcast(intent);
     }
 
     private void triggerNotification(double decibels) {

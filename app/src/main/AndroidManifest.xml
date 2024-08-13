@@ -1,8 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.noiseleveldetector">
 
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
     <application
         android:allowBackup="true"
@@ -12,15 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".MainActivity">
+        <!-- Main Activity -->
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Service for Noise Monitoring -->
         <service
             android:name=".NoiseMonitoringService"
-            android:foregroundServiceType="microphone" />
+            android:foregroundServiceType="microphone"
+            android:exported="false" />
+
+        <!-- Broadcast Receiver -->
+        <receiver android:name=".MainActivity$NoiseLevelReceiver" android:exported="false" />
     </application>
 </manifest>
